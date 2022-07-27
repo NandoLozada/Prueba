@@ -1,0 +1,44 @@
+﻿@model List<IntegracionWebAPI.Entidades.Reserva>
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h2>Reservas del Cuarto @Model[0].IdCuarto</h2>
+        <table class=" table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th> 
+                    <th>Id Orden</th> 
+                    <th>Fecha Inicio</th> 
+                    <th>Fecha Fin</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reserva in Model)
+                {
+                    <tr>                        
+                        <td>
+                            @reserva.Id
+
+                        </td>
+                        <td>
+                            @reserva.IdOrden
+
+                        </td>
+                        <td>
+                            @reserva.FechaInicio
+
+                        </td>
+                        <td>
+                            @reserva.FechaFin
+
+                        </td>
+                    </tr>                
+                }
+            
+            </tbody>
+        </table>
+    </body>
+</html>

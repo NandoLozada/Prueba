@@ -1,0 +1,23 @@
+﻿@model List<IntegracionWebAPI.Entidades.Nota>
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h2>Notas del Cuarto @Model[0].IdCuarto</h2>
+        <table>
+            <tbody>
+                @foreach (var nota in Model)
+                {
+                    <tr>
+                        <td>
+                            @nota.Descripcion
+                        </td>
+                    </tr>                
+                }
+            
+            </tbody>
+        </table>
+    </body>
+</html>
