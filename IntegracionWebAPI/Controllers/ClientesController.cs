@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -18,35 +19,39 @@ namespace IntegracionWebAPI.Controllers
         private readonly ClientesDAO DAO;
         private readonly Clientes.ServClientes servLista;
 
-        public ClientesController(ClientesDAO DAO, Clientes.ServClientes servLista)
+        private readonly IServicioCliente _cliente;
+
+        public ClientesController(ClientesDAO DAO, Clientes.ServClientes servLista, IServicioCliente cliente)
         {
             this.DAO = DAO;
             this.servLista = servLista;
+            _cliente = cliente;
         }
-        [HttpGet("ListaClientes")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        public List<Cliente> Get()
+        [HttpGet("6-ListaClientes")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        public async Task<List<Cliente>> Get()
         {
             var clientes = servLista.ListaClientes(DAO);
-            return clientes;
+            var clients = await _cliente.ListarClients();
+            return clients;
         }
                 
-        [HttpGet("InfoCliente/{DNI}")]
+        [HttpGet("7-15-InfoCliente/{DNI}")]
         public List<Cliente> GetPorDNI(int DNI)
         {
             var clientes = servLista.ClientePorDNI(DAO, DNI);
             return clientes;
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPost("AgregarCliente")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        [HttpPost("8-16-AgregarCliente")]
         public void Post(int DNI, string nombre)
         {
             servLista.AgregarCliente(DAO, DNI, nombre);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPatch("EstadoCliente")]
+        [HttpPatch("8-EstadoCliente")]
         public void EstadoCliente(int estado, int id)
         {
             servLista.EstadoCliente(DAO,estado, id);
