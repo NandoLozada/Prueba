@@ -31,7 +31,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpGet("9-PDF/{idcuarto}")]
+        [HttpGet("PDF/{idcuarto}")]
         public Task<IActionResult> GetPorCuartoPDF(int idcuarto)
         {
             var reservas = servLista.ListaReservasPorCuarto(DAO, idcuarto);
@@ -40,7 +40,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpGet("10-ReservaPorCuarto")]
+        [HttpGet("ReservaPorCuarto")]
         public List<Reserva> Get(int id)
         {
             var reservas = servLista.ListaReservasPorCuarto(DAO, id);
@@ -49,14 +49,14 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpGet("13-CuartosDisponibles")]
+        [HttpGet("CuartosDisponibles")]
         public List<int> BuscarCuartosDisponibles(DateTime fechaini, DateTime fechafin)
         {
             var cuartos = servLista.CuartosDisponibles(DAO, fechaini, fechafin);
             return cuartos;
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpPost("17-CrearReserva")]
+        [HttpPost("CrearReserva")]
         public ActionResult Post(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
             if (servLista.TomarReserva(DAO, idorden, idcuarto, fecinicio, fecfin))
@@ -70,7 +70,7 @@ namespace IntegracionWebAPI.Controllers
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpPatch("11-19-CambiarEstadoReserva")]
+        [HttpPatch("CambiarEstadoReserva")]
         public void EstadoReserva(int estado, int id)
         {
             servLista.EstadoReserva(DAO, estado, id);

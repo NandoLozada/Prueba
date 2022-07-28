@@ -45,7 +45,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpPost("14-AgregarNota")]
+        [HttpPost("AgregarNota")]
         public void Post(int idcuarto, string descripcion)
         {
             servLista.AgregarNota(DAO, idcuarto, descripcion);

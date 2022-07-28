@@ -22,7 +22,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpPost("17-CrearOrden")]
+        [HttpPost("CrearOrden")]
         public int Post(int idcliente)
         {
             var idorden = servLista.AgregarOrden(DAO, idcliente);

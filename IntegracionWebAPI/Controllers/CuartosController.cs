@@ -26,7 +26,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
 
-        [HttpGet("1-12-ListadeCuartos")]
+        [HttpGet("ListadeCuartos")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         public List<Cuarto> Get()
@@ -44,7 +44,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPost("2-AgregarunCuarto")]
+        [HttpPost("AgregarunCuarto")]
         public void Post([FromForm] int capacidad,  IFormFile foto)
         {
             servLista.AgregarCuarto(DAO, capacidad, foto);
@@ -52,14 +52,14 @@ namespace IntegracionWebAPI.Controllers
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        [HttpPatch("3-5-18-CambiarEstadoCuarto")]
+        [HttpPatch("CambiarEstadoCuarto")]
         public void EstadoCuarto(int estado, int id)
         {
             servLista.EstadoCuarto(DAO, estado, id);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPut("4-ActualizarCuarto")]
+        [HttpPut("ActualizarCuarto")]
         public void ActualizarCuarto([FromForm]int id, int capacidad, IFormFile foto)
         {
             servLista.ActualizarCuarto(DAO, id, capacidad, foto);

@@ -23,7 +23,7 @@ namespace IntegracionWebAPI.Controllers
             this.DAO = DAO;
             this.servLista = servLista;
         }
-        [HttpGet("6-ListaClientes")]
+        [HttpGet("ListaClientes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         public List<Cliente> Get()
         {
@@ -31,7 +31,7 @@ namespace IntegracionWebAPI.Controllers
             return clientes;
         }
                 
-        [HttpGet("7-15-InfoCliente/{DNI}")]
+        [HttpGet("InfoCliente/{DNI}")]
         public List<Cliente> GetPorDNI(int DNI)
         {
             var clientes = servLista.ClientePorDNI(DAO, DNI);
@@ -39,14 +39,14 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPost("8-16-AgregarCliente")]
+        [HttpPost("AgregarCliente")]
         public void Post(int DNI, string nombre)
         {
             servLista.AgregarCliente(DAO, DNI, nombre);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPatch("8-EstadoCliente")]
+        [HttpPatch("EstadoCliente")]
         public void EstadoCliente(int estado, int id)
         {
             servLista.EstadoCliente(DAO,estado, id);
