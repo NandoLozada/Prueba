@@ -24,7 +24,7 @@ namespace IntegracionWebAPI.Controllers
             this.servLista = servLista;
         }
         [HttpGet("ListaClientes")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         public List<Cliente> Get()
         {
             var clientes = servLista.ListaClientes(DAO);
@@ -38,7 +38,7 @@ namespace IntegracionWebAPI.Controllers
             return clientes;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("AgregarCliente")]
         public void Post(int DNI, string nombre)
         {
