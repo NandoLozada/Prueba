@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -18,17 +19,21 @@ namespace IntegracionWebAPI.Controllers
         private readonly ClientesDAO DAO;
         private readonly Clientes.ServClientes servLista;
 
-        public ClientesController(ClientesDAO DAO, Clientes.ServClientes servLista)
+        private readonly IServicioCliente _cliente;
+
+        public ClientesController(ClientesDAO DAO, Clientes.ServClientes servLista, IServicioCliente cliente)
         {
             this.DAO = DAO;
             this.servLista = servLista;
+            _cliente = cliente;
         }
         [HttpGet("6-ListaClientes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        public List<Cliente> Get()
+        public async Task<List<Cliente>> Get()
         {
             var clientes = servLista.ListaClientes(DAO);
-            return clientes;
+            var clients = await _cliente.ListarClients();
+            return clients;
         }
                 
         [HttpGet("7-15-InfoCliente/{DNI}")]

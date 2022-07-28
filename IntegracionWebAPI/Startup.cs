@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using IntegracionWebAPI.Servicios.Interfaz;
+using IntegracionWebAPI.Servicios.Implementacion;
+using IntegracionWebAPI.Data;
 
 namespace IntegracionWebAPI
 {
@@ -78,6 +81,12 @@ namespace IntegracionWebAPI
 
             services.AddTransient<Reservas.ServReservas>();
             services.AddTransient<ReservasDAO>();
+
+            //Nuevoooo
+            services.AddScoped<DapperContext>();
+            services.AddScoped<IServicioCliente, ServicioCliente>();
+            //
+
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
