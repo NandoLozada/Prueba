@@ -16,45 +16,39 @@ namespace IntegracionWebAPI.Controllers
     [Authorize]
     public class ClientesController: ControllerBase
     {
-        private readonly ClientesDAO DAO;
-        private readonly Clientes.ServClientes servLista;
-
         private readonly IServicioCliente _cliente;
 
-        public ClientesController(ClientesDAO DAO, Clientes.ServClientes servLista, IServicioCliente cliente)
+        public ClientesController(IServicioCliente cliente)
         {
-            this.DAO = DAO;
-            this.servLista = servLista;
             _cliente = cliente;
         }
-        [HttpGet("6-ListaClientes")]
+        [HttpGet("ListaClientes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         public async Task<List<Cliente>> Get()
         {
-            var clientes = servLista.ListaClientes(DAO);
-            var clients = await _cliente.ListarClients();
-            return clients;
+            var clientes = await _cliente.ListarClientes();
+            return clientes;
         }
                 
-        [HttpGet("7-15-InfoCliente/{DNI}")]
-        public List<Cliente> GetPorDNI(int DNI)
+        [HttpGet("Cliente/{DNI}")]
+        public Task<Cliente> GetPorDNI(int DNI)
         {
-            var clientes = servLista.ClientePorDNI(DAO, DNI);
+            var clientes = _cliente.ClientePorDNI(DNI);
             return clientes;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPost("8-16-AgregarCliente")]
+        [HttpPost("AgregarCliente")]
         public void Post(int DNI, string nombre)
         {
-            servLista.AgregarCliente(DAO, DNI, nombre);
+            _cliente.AgregarCliente(DNI, nombre);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpPatch("8-EstadoCliente")]
-        public void EstadoCliente(int estado, int id)
+        [HttpPatch("CambiarEstadoCliente")]
+        public void CambiarEstadoCliente(int estado, int id)
         {
-            servLista.EstadoCliente(DAO,estado, id);
+            _cliente.CambiarEstadoCliente(estado, id);
         }
     }
 }

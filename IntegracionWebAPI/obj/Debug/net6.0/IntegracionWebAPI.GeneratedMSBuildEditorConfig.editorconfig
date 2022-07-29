@@ -8,21 +8,21 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = IntegracionWebAPI
 build_property.RootNamespace = IntegracionWebAPI
-build_property.ProjectDir = C:\Users\extrados\source\repos\Prueba\IntegracionWebAPI\
+build_property.ProjectDir = D:\Varios\Nueva carpeta\Nueva carpeta\Users\Nando\source\repos\IntegracionWebAPI\IntegracionWebAPI\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\extrados\source\repos\Prueba\IntegracionWebAPI
+build_property.MSBuildProjectDirectory = D:\Varios\Nueva carpeta\Nueva carpeta\Users\Nando\source\repos\IntegracionWebAPI\IntegracionWebAPI
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/extrados/source/repos/Prueba/IntegracionWebAPI/View/CuartosVista.cshtml]
+[D:/Varios/Nueva carpeta/Nueva carpeta/Users/Nando/source/repos/IntegracionWebAPI/IntegracionWebAPI/View/CuartosVista.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld1xDdWFydG9zVmlzdGEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/extrados/source/repos/Prueba/IntegracionWebAPI/View/NotasVista.cshtml]
+[D:/Varios/Nueva carpeta/Nueva carpeta/Users/Nando/source/repos/IntegracionWebAPI/IntegracionWebAPI/View/NotasVista.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld1xOb3Rhc1Zpc3RhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/extrados/source/repos/Prueba/IntegracionWebAPI/View/ReservasVista.cshtml]
+[D:/Varios/Nueva carpeta/Nueva carpeta/Users/Nando/source/repos/IntegracionWebAPI/IntegracionWebAPI/View/ReservasVista.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld1xSZXNlcnZhc1Zpc3RhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
