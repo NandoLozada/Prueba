@@ -6,6 +6,7 @@ using Wkhtmltopdf.NetCore;
 using IntegracionWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -14,14 +15,12 @@ namespace IntegracionWebAPI.Controllers
     [Authorize]
     public class CuartosController : ControllerBase
     {
-        private readonly CuartosDAO DAO;
-        private readonly Cuartos.ServCuartos servLista;
-        readonly IGeneratePdf generatePdf;
+        private readonly IServicioCuarto _cuarto;
+        private readonly IGeneratePdf generatePdf;
 
-        public CuartosController(CuartosDAO DAO, Cuartos.ServCuartos servLista, IGeneratePdf generatePdf)
+        public CuartosController(IServicioCuarto cuarto, IGeneratePdf generatePdf)
         {
-            this.DAO = DAO;
-            this.servLista = servLista;
+            _cuarto = cuarto;
             this.generatePdf = generatePdf;
         }
 
@@ -29,17 +28,16 @@ namespace IntegracionWebAPI.Controllers
         [HttpGet("ListadeCuartos")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        public List<Cuarto> Get()
+        public Task<List<Cuarto>> Get()
         {
-            var cuartos = servLista.ListaCuartos(DAO);
-            //generatePdf.GetPdf("View/CuartosVista.cshtml", cuartos);
+            var cuartos = _cuarto.ListaCuartos();
             return cuartos;
         }
 
         [HttpGet("UnCuarto/{Id}")]
-        public List<Cuarto> CuartoPorId(int Id)
+        public Task<Cuarto> CuartoPorId(int Id)
         {
-            var cuartos = servLista.CuartoPorId(DAO, Id);
+            var cuartos = _cuarto.CuartoPorId(Id);
             return cuartos;
         }
 
@@ -47,7 +45,15 @@ namespace IntegracionWebAPI.Controllers
         [HttpPost("AgregarunCuarto")]
         public void Post([FromForm] int capacidad,  IFormFile foto)
         {
-            servLista.AgregarCuarto(DAO, capacidad, foto);
+            string foto64;
+
+            using (var ms = new MemoryStream())
+            {
+                foto.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                foto64 = Convert.ToBase64String(fileBytes);
+            }
+            _cuarto.AgregarCuarto(capacidad, foto64);
         }
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
@@ -55,14 +61,22 @@ namespace IntegracionWebAPI.Controllers
         [HttpPatch("CambiarEstadoCuarto")]
         public void EstadoCuarto(int estado, int id)
         {
-            servLista.EstadoCuarto(DAO, estado, id);
+            _cuarto.EstadoCuarto(estado, id);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPut("ActualizarCuarto")]
         public void ActualizarCuarto([FromForm]int id, int capacidad, IFormFile foto)
         {
-            servLista.ActualizarCuarto(DAO, id, capacidad, foto);
+            string foto64;
+
+            using (var ms = new MemoryStream())
+            {
+                foto.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                foto64 = Convert.ToBase64String(fileBytes);
+            }
+            _cuarto.ActualizarCuarto(id, capacidad, foto);
         }
     }
 }
