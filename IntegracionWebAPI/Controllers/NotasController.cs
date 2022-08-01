@@ -5,6 +5,7 @@ using IntegracionWebAPI.Servicios;
 using Wkhtmltopdf.NetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -12,35 +13,33 @@ namespace IntegracionWebAPI.Controllers
     [Route("api/Notas")]
     [Authorize]
     public class NotasController: ControllerBase
-    {
-        private readonly NotasDAO DAO;
-        private readonly Notas.ServNotas servLista;
+    {       
+        private readonly IServicioNota _nota;
         private readonly IGeneratePdf generatePdf;
 
-        public NotasController(NotasDAO DAO, Notas.ServNotas servLista, IGeneratePdf generatePdf)
-        {
-            this.DAO = DAO;
-            this.servLista = servLista;
+        public NotasController(IServicioNota nota, IGeneratePdf generatePdf)
+        {           
+            _nota = nota;
             this.generatePdf = generatePdf;
         }
         [HttpGet]
-        public List<Nota> Get()
+        public async Task<List<Nota>> Get()
         {
-            var notas = servLista.ListaNotas(DAO);
+            var notas = await _nota.ListaNotas();
             return notas;
         }
 
         [HttpGet("{idcuarto}")]
-        public List<Nota> GetPorCuarto(int idcuarto)
+        public async Task<List<Nota>> GetPorCuarto(int idcuarto)
         {
-            var notas = servLista.NotasPorCuarto(DAO, idcuarto);
-            return notas.ToList();
+            var notas = await _nota.NotasPorCuarto(idcuarto);
+            return notas;
         }
 
         [HttpGet("PDF/{idcuarto}")]
         public Task<IActionResult> GetPorCuartoPDF(int idcuarto)
         {
-            var notas = servLista.NotasPorCuarto(DAO, idcuarto);
+            var notas = _nota.NotasPorCuarto(idcuarto);
             return generatePdf.GetPdf("View/NotasVista.cshtml", notas);
         }
 
@@ -48,13 +47,13 @@ namespace IntegracionWebAPI.Controllers
         [HttpPost("AgregarNota")]
         public void Post(int idcuarto, string descripcion)
         {
-            servLista.AgregarNota(DAO, idcuarto, descripcion);
+            _nota.AgregarNota(idcuarto, descripcion);
         }
 
         [HttpPut]
         public void ActualizarNota(int id, string descripcion)
         {
-            servLista.ActualizarNota(DAO, id, descripcion);
+            _nota.ActualizarNota(id, descripcion);
         }
     }
 }

@@ -28,22 +28,22 @@ namespace IntegracionWebAPI.Controllers
         [HttpGet("ListadeCuartos")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
-        public Task<List<Cuarto>> Get()
+        public async Task<List<Cuarto>> Get()
         {
-            var cuartos = _cuarto.ListaCuartos();
+            var cuartos = await _cuarto.ListaCuartos();
             return cuartos;
         }
 
         [HttpGet("UnCuarto/{Id}")]
-        public Task<Cuarto> CuartoPorId(int Id)
+        public async Task<Cuarto> CuartoPorId(int Id)
         {
-            var cuartos = _cuarto.CuartoPorId(Id);
+            var cuartos = await _cuarto.CuartoPorId(Id);
             return cuartos;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("AgregarunCuarto")]
-        public void Post([FromForm] int capacidad,  IFormFile foto)
+        public void Post ([FromForm] int capacidad,  IFormFile foto)
         {
             string foto64;
 
@@ -76,7 +76,7 @@ namespace IntegracionWebAPI.Controllers
                 var fileBytes = ms.ToArray();
                 foto64 = Convert.ToBase64String(fileBytes);
             }
-            _cuarto.ActualizarCuarto(id, capacidad, foto);
+            _cuarto.ActualizarCuarto(id, capacidad, foto64);
         }
     }
 }

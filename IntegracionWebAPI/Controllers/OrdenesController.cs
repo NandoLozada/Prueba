@@ -4,6 +4,7 @@ using IntegracionWebAPI.DAOs;
 using IntegracionWebAPI.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -12,20 +13,18 @@ namespace IntegracionWebAPI.Controllers
     [Authorize]
     public class OrdenesController : ControllerBase
     {
-        private readonly OrdenesDAO DAO;
-        private readonly Ordenes.ServOrdenes servLista;
+        private readonly IServicioOrden _orden;
 
-        public OrdenesController(OrdenesDAO DAO, Ordenes.ServOrdenes servLista)
+        public OrdenesController(IServicioOrden orden)
         {
-            this.DAO = DAO;
-            this.servLista = servLista;
+            _orden = orden;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("CrearOrden")]
-        public int Post(int idcliente)
+        public async Task<int> Post(int idcliente)
         {
-            var idorden = servLista.AgregarOrden(DAO, idcliente);
+            var idorden = await _orden.AgregarOrden(idcliente);
             return idorden;
 
         }

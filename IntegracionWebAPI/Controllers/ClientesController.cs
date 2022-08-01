@@ -31,9 +31,9 @@ namespace IntegracionWebAPI.Controllers
         }
                 
         [HttpGet("Cliente/{DNI}")]
-        public Task<Cliente> GetPorDNI(int DNI)
+        public async Task<Cliente> GetPorDNI(int DNI)
         {
-            var clientes = _cliente.ClientePorDNI(DNI);
+            var clientes = await _cliente.ClientePorDNI(DNI);
             return clientes;
         }
 
