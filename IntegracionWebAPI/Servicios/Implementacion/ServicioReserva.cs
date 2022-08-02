@@ -44,7 +44,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
 
             foreach (int Id in listaid)
             {
-                if (HayDisponibilidad(Id, fechaini, fechafin))
+                if (await HayDisponibilidad(Id, fechaini, fechafin))
                 {
                     listacuartosdisponibles.Add(Id);
                 }
@@ -55,7 +55,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
         public async Task<bool> TomarReserva(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
             bool ok = false;
-            if (HayDisponibilidad(idcuarto, fecinicio, fecfin))
+            if (await HayDisponibilidad(idcuarto, fecinicio, fecfin))
             {
                 ok = await AgregarReserva(idorden, idcuarto, fecinicio, fecfin);
             }
@@ -73,19 +73,15 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 conexion.Execute(updatereserva, new { estadoq = estado, idq = id });
             }
-        }
+        }   
 
-        
+        //***************************************************************************
 
-
-        ///***************************************************************************
-
-
-        public bool HayDisponibilidad(int idcuarto, DateTime fecinicio, DateTime fecfin)
+        public async Task<bool> HayDisponibilidad(int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
             List<Reserva> reservaList = new List<Reserva>();
 
-            reservaList = ReservasPorCuarto(idcuarto, fecinicio, fecfin); //Lista de reservas para un cuarto
+            reservaList = await ReservasPorCuarto(idcuarto, fecinicio, fecfin); //Lista de reservas para un cuarto
 
             foreach (Reserva reserva in reservaList)
             {
@@ -100,7 +96,6 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                         return false;
                     }
                 }
-
                 if (fecinicio < reserva.FechaInicio & fecfin > reserva.FechaFin)
                 {
                     return false;
@@ -108,13 +103,13 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
             return true;
         }
-        public List<Reserva> ReservasPorCuarto(int idcuarto, DateTime fecinicio, DateTime fecfin)
+        public async Task<List<Reserva>> ReservasPorCuarto(int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
             var queryListaReservas = "SELECT * FROM Reservas WHERE IdCuarto = @idcuartoq AND IdEstado = 1";
 
             using (var conexion = _db.SuperConexionNando())
             {
-                var listaReservas = conexion.Query<Reserva>(queryListaReservas, new { idcuartoq = idcuarto }).ToList();
+                var listaReservas = (await conexion.QueryAsync<Reserva>(queryListaReservas, new { idcuartoq = idcuarto })).ToList();
 
                 return listaReservas;
             }
@@ -126,7 +121,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
 
             using (var conexion = _db.SuperConexionNando())
             {
-                listaidcuartos =(await conexion.QueryAsync<int>(idcuartosquery, new { estado = 1 })).ToList(); ;
+                listaidcuartos = (await conexion.QueryAsync<int>(idcuartosquery, new { estado = 1 })).ToList(); ;
             }
 
             return listaidcuartos.ToList();
