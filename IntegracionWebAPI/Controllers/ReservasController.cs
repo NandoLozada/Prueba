@@ -47,16 +47,16 @@ namespace IntegracionWebAPI.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpGet("CuartosDisponibles")]
-        public List<int> BuscarCuartosDisponibles(DateTime fechaini, DateTime fechafin)
+        public async Task<List<int>> BuscarCuartosDisponibles(DateTime fechaini, DateTime fechafin)
         {
-            var cuartos = servLista.CuartosDisponibles(DAO, fechaini, fechafin);
+            var cuartos = await _reserva.CuartosDisponibles(fechaini, fechafin);
             return cuartos;
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("CrearReserva")]
-        public ActionResult Post(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
+        public async Task <ActionResult> Post(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
-            if (servLista.TomarReserva(DAO, idorden, idcuarto, fecinicio, fecfin))
+            if (await _reserva.TomarReserva(idorden, idcuarto, fecinicio, fecfin))
             {
                 return Ok();
             }
@@ -68,9 +68,9 @@ namespace IntegracionWebAPI.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPatch("CambiarEstadoReserva")]
-        public void EstadoReserva(int estado, int id)
+        public void CambiarEstadoReserva(int estado, int id)
         {
-            servLista.EstadoReserva(DAO, estado, id);
+            _reserva.CambiarEstadoReserva(estado, id);
         }
     }
 }
