@@ -11,7 +11,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/reservas")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ReservasController: ControllerBase
     {private readonly IServicioReserva _reserva;
         private readonly IGeneratePdf generatePdf;
@@ -65,8 +65,6 @@ namespace IntegracionWebAPI.Controllers
             
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPatch("CambiarEstadoReserva")]
         public void CambiarEstadoReserva(int estado, int id)
         {

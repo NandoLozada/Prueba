@@ -12,7 +12,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/cuartos")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CuartosController : ControllerBase
     {
         private readonly IServicioCuarto _cuarto;
@@ -26,8 +26,6 @@ namespace IntegracionWebAPI.Controllers
 
 
         [HttpGet("ListadeCuartos")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         public async Task<List<Cuarto>> Get()
         {
             var cuartos = await _cuarto.ListaCuartos();
@@ -35,7 +33,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [HttpGet("UnCuarto/{Id}")]
-        public async Task<Cuarto> CuartoPorId(int Id)
+        public async Task<List<Cuarto>> CuartoPorId(int Id)
         {
             var cuartos = await _cuarto.CuartoPorId(Id);
             return cuartos;
@@ -56,8 +54,6 @@ namespace IntegracionWebAPI.Controllers
             _cuarto.AgregarCuarto(capacidad, foto64);
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPatch("CambiarEstadoCuarto")]
         public void EstadoCuarto(int estado, int id)
         {

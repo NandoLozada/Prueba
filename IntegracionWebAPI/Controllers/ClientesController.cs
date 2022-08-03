@@ -13,7 +13,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/clientes")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ClientesController: ControllerBase
     {
         private readonly IServicioCliente _cliente;

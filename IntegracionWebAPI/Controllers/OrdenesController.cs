@@ -10,7 +10,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/ordenes")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdenesController : ControllerBase
     {
         private readonly IServicioOrden _orden;

@@ -11,7 +11,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/Notas")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotasController: ControllerBase
     {       
         private readonly IServicioNota _nota;

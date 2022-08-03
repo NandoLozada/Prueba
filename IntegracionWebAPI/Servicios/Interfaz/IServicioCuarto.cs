@@ -6,7 +6,7 @@ namespace IntegracionWebAPI.Servicios.Interfaz
     {
         public Task<List<Cuarto>> ListaCuartos();
 
-        public Task<Cuarto> CuartoPorId(int Id);
+        public Task<List<Cuarto>> CuartoPorId(int Id);
 
         public void AgregarCuarto(int capacidad, string foto);
 

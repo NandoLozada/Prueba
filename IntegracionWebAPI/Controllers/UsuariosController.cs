@@ -1,7 +1,6 @@
 ﻿using IntegracionWebAPI.Entidades;
 using IntegracionWebAPI.DAOs;
 using Microsoft.AspNetCore.Mvc;
-//using IntegracionWebAPI.DAOs;
 using IntegracionWebAPI.Servicios;
 using IntegracionWebAPI.DTOs;
 using Microsoft.AspNetCore.Identity;
@@ -43,6 +42,9 @@ namespace IntegracionWebAPI.Controllers
 
             if (resultado.Succeeded)
             {
+                usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
+                await userManager.AddClaimAsync(usuario, new Claim("esAC", "2"));
+
                 return await ConstruirToken(credencialesUsuario);
             }
             else
@@ -50,8 +52,7 @@ namespace IntegracionWebAPI.Controllers
                 return BadRequest(resultado.Errors);
             }
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Cambiar Password")]
         public async Task<ActionResult<RespuestaAutenticacion>> CambiarPass(string emailusu, string pass, string nuevapass)
         {
@@ -103,10 +104,6 @@ namespace IntegracionWebAPI.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
         {
-            //CredencialesUsuario credencialesUsuario = new CredencialesUsuario();
-
-            //credencialesUsuario.Email = emailusu;
-            //credencialesUsuario.Password = pass;
 
             var resultado = await signInManager.PasswordSignInAsync(credencialesUsuario.Email, credencialesUsuario.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -120,7 +117,7 @@ namespace IntegracionWebAPI.Controllers
             }
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("HacerAdmin")]
         public async Task<ActionResult> HacerAdmin (EditarAdmin editarAdmin)
         {
@@ -129,7 +126,7 @@ namespace IntegracionWebAPI.Controllers
             return NoContent();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("HacerAC")]
         public async Task<ActionResult> HacerAC(EditarAdmin editarAdmin)
         {
@@ -138,7 +135,7 @@ namespace IntegracionWebAPI.Controllers
             return NoContent();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("RemoverAdmin")]
         public async Task<ActionResult> RemoverAdmin(EditarAdmin editarAdmin)
         {
@@ -147,7 +144,7 @@ namespace IntegracionWebAPI.Controllers
             return NoContent();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("RemoverAC")]
         public async Task<ActionResult> RemoverAC(EditarAdmin editarAdmin)
         {

@@ -45,9 +45,9 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
         }
 
-        public async Task<Cuarto> CuartoPorId(int Id)
+        public async Task <List<Cuarto>> CuartoPorId(int Id)
         {
-            var queryjoin = "SELECT * FROM Cuartos LEFT JOIN Notas ON Cuartos.Id = Notas.IdCuarto WHERE Cuartos.Id = " + idcuarto;
+            var queryjoin = "SELECT * FROM Cuartos LEFT JOIN Notas ON Cuartos.Id = Notas.IdCuarto WHERE Cuartos.Id = " + Id;
 
             var diccuarto = new Dictionary<int, Cuarto>();
 

@@ -1,9 +1,10 @@
 ﻿using Dapper;
 using IntegracionWebAPI.Data;
+using IntegracionWebAPI.Servicios.Interfaz;
 
 namespace IntegracionWebAPI.Servicios.Implementacion
 {
-    public class ServicioOrden
+    public class ServicioOrden: IServicioOrden
     {
         private readonly DapperContext _db;
 
@@ -12,7 +13,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             _db = db;
         }
 
-        public int AgregarOrden(int idcliente)
+        public async Task<int> AgregarOrden(int idcliente)
         {
             var insertorden = "INSERT INTO Ordenes (IdCliente) VALUES (@idcliente)";
             var ultid = "SELECT MAX(Id) FROM ORDENES";
@@ -21,8 +22,8 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             using (var conexion = _db.SuperConexionNando())
 
             {
-                conexion.Execute(insertorden, new { idcliente = idcliente });
-                orden = conexion.QuerySingle<int>(ultid);
+                await conexion.ExecuteAsync(insertorden, new { idcliente = idcliente });
+                orden = await conexion.QuerySingleAsync<int>(ultid);
             }
 
             return orden;
