@@ -1,4 +1,6 @@
 ﻿using IntegracionWebAPI.Entidades;
+using IntegracionWebAPI.Utiles;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IntegracionWebAPI.Servicios.Interfaz
 {
@@ -8,11 +10,11 @@ namespace IntegracionWebAPI.Servicios.Interfaz
 
         public Task<List<Cuarto>> CuartoPorId(int Id);
 
-        public void AgregarCuarto(int capacidad, string foto);
+        public Task<Resultado> AgregarCuarto(int capacidad, string foto);
 
-        public void EstadoCuarto(int estado, int id);
+        public Task<Resultado> EstadoCuarto(int estado, int id);
 
-        public void ActualizarCuarto(int id, int capacidad, string foto);
+        public Task<Resultado> ActualizarCuarto(int id, int capacidad, string foto);
 
     }
 }

@@ -38,7 +38,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    var cliente = await conexion.QueryFirstAsync<Cliente>(clientedni);
+                    var cliente = await conexion.QuerySingleAsync<Cliente>(clientedni);
 
                     return cliente;
                 }

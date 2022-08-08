@@ -33,15 +33,30 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [HttpGet("UnCuarto/{Id}")]
-        public async Task<List<Cuarto>> CuartoPorId(int Id)
+        public async Task<ActionResult<Cuarto>> CuartoPorId(int Id)
         {
-            var cuartos = await _cuarto.CuartoPorId(Id);
-            return cuartos;
+            if (Id !=0)
+            {
+                var cuartos = await _cuarto.CuartoPorId(Id);
+
+                if (cuartos != null)
+                {
+                    return Ok(cuartos);
+                }
+                else
+                {
+                    return NotFound("No hay cuarto con ese Id");
+                }
+            }
+            else
+            {
+                return BadRequest("Ingrese un Id valido");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("AgregarunCuarto")]
-        public void Post ([FromForm] int capacidad,  IFormFile foto)
+        public async Task<ActionResult> Post ([FromForm] int capacidad,  IFormFile foto)
         {
             string foto64;
 
@@ -51,18 +66,37 @@ namespace IntegracionWebAPI.Controllers
                 var fileBytes = ms.ToArray();
                 foto64 = Convert.ToBase64String(fileBytes);
             }
-            _cuarto.AgregarCuarto(capacidad, foto64);
+            var res = await _cuarto.AgregarCuarto(capacidad, foto64);
+
+            if (res.ok)
+            {
+                return Ok("El cuarto se agregó correctamente");
+            }
+            else
+            {
+                return BadRequest(res.mensaje);
+            }
+
         }
 
         [HttpPatch("CambiarEstadoCuarto")]
-        public void EstadoCuarto(int estado, int id)
+        public async Task<ActionResult> EstadoCuarto(int estado, int id)
         {
-            _cuarto.EstadoCuarto(estado, id);
+            var res = await _cuarto.EstadoCuarto(estado, id);
+
+            if(res.ok)
+            {
+                return Ok("El estado del cuarto fue modificado con exito");
+            }
+            else
+            {
+                return BadRequest(res.mensaje);
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPut("ActualizarCuarto")]
-        public void ActualizarCuarto([FromForm]int id, int capacidad, IFormFile foto)
+        public async Task<ActionResult> ActualizarCuarto([FromForm]int id, int capacidad, IFormFile foto)
         {
             string foto64;
 
@@ -72,7 +106,16 @@ namespace IntegracionWebAPI.Controllers
                 var fileBytes = ms.ToArray();
                 foto64 = Convert.ToBase64String(fileBytes);
             }
-            _cuarto.ActualizarCuarto(id, capacidad, foto64);
+            var res = await _cuarto.ActualizarCuarto(id, capacidad, foto64);
+
+            if(res.ok)
+            {
+                return Ok("El cuarto se actualizo con exito");
+            }
+            else
+            {
+                return BadRequest(res.mensaje);
+            }
         }
     }
 }

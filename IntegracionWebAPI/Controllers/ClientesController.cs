@@ -41,7 +41,7 @@ namespace IntegracionWebAPI.Controllers
                 {
                     return Ok(clientes);
                 }
-                else { return BadRequest("No se encuentra ningun cliente con ese DNI"); }
+                else { return NotFound("No se encuentra ningun cliente con ese DNI"); }
             }
             else
             {
