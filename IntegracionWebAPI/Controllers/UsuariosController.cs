@@ -15,7 +15,7 @@ namespace IntegracionWebAPI.Controllers
 {
     [ApiController]
     [Route("api/usuarios")]
-    [Authorize]
+    //[Authorize]
     public class UsuariosController: ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;

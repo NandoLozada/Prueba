@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using IntegracionWebAPI.Servicios.Interfaz;
 using IntegracionWebAPI.Servicios.Implementacion;
 using IntegracionWebAPI.Data;
+using IntegracionWebAPI.Utiles;
 
 namespace IntegracionWebAPI
 {
@@ -83,6 +84,7 @@ namespace IntegracionWebAPI
             services.AddTransient<ReservasDAO>();
 
             //Nuevoooo
+            services.AddScoped<Resultado>();
             services.AddScoped<DapperContext>();
             services.AddScoped<IServicioCliente, ServicioCliente>();
             services.AddScoped<IServicioCuarto, ServicioCuarto>();
