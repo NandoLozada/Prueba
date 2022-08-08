@@ -1,4 +1,6 @@
 ﻿using IntegracionWebAPI.Entidades;
+using IntegracionWebAPI.Utiles;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IntegracionWebAPI.Servicios.Interfaz
 {
@@ -8,8 +10,8 @@ namespace IntegracionWebAPI.Servicios.Interfaz
 
         Task<Cliente> ClientePorDNI(int DNI);
 
-        void AgregarCliente(int DNI, string nombre);
+        Task <Resultado> AgregarCliente(int DNI, string nombre);
 
-        void CambiarEstadoCliente(int estado, int id);
+        Task<Resultado> CambiarEstadoCliente(int estado, int id);
     }
 }

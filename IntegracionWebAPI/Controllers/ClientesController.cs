@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using IntegracionWebAPI.Servicios.Interfaz;
+using IntegracionWebAPI.Utiles;
 
 namespace IntegracionWebAPI.Controllers
 {
@@ -29,26 +30,70 @@ namespace IntegracionWebAPI.Controllers
             var clientes = await _cliente.ListarClientes();
             return clientes;
         }
-                
+
         [HttpGet("Cliente/{DNI}")]
-        public async Task<Cliente> GetPorDNI(int DNI)
+        public async Task<ActionResult<Cliente>> GetPorDNI(int DNI)
         {
-            var clientes = await _cliente.ClientePorDNI(DNI);
-            return clientes;
+            if (DNI != 0)
+            {
+                var clientes = await _cliente.ClientePorDNI(DNI);
+                if (clientes != null)
+                {
+                    return Ok(clientes);
+                }
+                else { return BadRequest("No se encuentra ningun cliente con ese DNI"); }
+            }
+            else
+            {
+                return BadRequest("El campo DNI no puede estar vacio");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPost("AgregarCliente")]
-        public void Post(int DNI, string nombre)
-        {
-            _cliente.AgregarCliente(DNI, nombre);
+        public async Task<ActionResult> Post(int DNI, string nombre)
+        {            
+            if ((nombre != null) & (DNI != 0))
+            {
+                var res = await _cliente.AgregarCliente(DNI, nombre);
+
+                if (res.ok)
+                {
+                    return Ok("El cliente se agregó con exito");
+                }
+                else
+                {
+                    return BadRequest(res.mensaje);
+                }
+            }
+            else
+            {
+                return BadRequest("No puede haber campos vacios");
+            }
+            
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPatch("CambiarEstadoCliente")]
-        public void CambiarEstadoCliente(int estado, int id)
+        public async Task<ActionResult> CambiarEstadoCliente(int estado, int id)
         {
-            _cliente.CambiarEstadoCliente(estado, id);
+            var res = await _cliente.CambiarEstadoCliente(estado, id);
+
+            if ((estado != 0)&(id != 0))
+            {
+                if (res.ok)
+                {
+                    return Ok("El cliente ha cambiado su estado a " + estado + " con exito");
+                }
+                else
+                {
+                    return BadRequest(res.mensaje);
+                }
+            }
+            else
+            {
+                return BadRequest("No puede haber campos vacios");
+            }
         }
     }
 }
