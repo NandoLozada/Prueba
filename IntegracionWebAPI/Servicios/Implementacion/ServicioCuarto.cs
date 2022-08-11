@@ -10,9 +10,9 @@ namespace IntegracionWebAPI.Servicios.Implementacion
     public class ServicioCuarto : IServicioCuarto
     {
         private readonly DapperContext _db;
-        private readonly Resultado _resultado;
+        private readonly ResultadoCuarto _resultado;
 
-        public ServicioCuarto(DapperContext db, Resultado resultado)
+        public ServicioCuarto(DapperContext db, ResultadoCuarto resultado)
         {
             _db = db;
             _resultado = resultado;
@@ -50,7 +50,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
         }
 
-        public async Task<List<Cuarto>> CuartoPorId(int Id)
+        public async Task<ResultadoCuarto> CuartoPorId(int Id)
         {
             var queryjoin = "SELECT * FROM Cuartos LEFT JOIN Notas ON Cuartos.Id = Notas.IdCuarto WHERE Cuartos.Id = " + Id;
 
@@ -60,7 +60,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    var listado = await conexion.QueryAsync<Cuarto, Nota, Cuarto>(queryjoin, (cuarto, nota) =>
+                    var cuartoc = await conexion.QueryAsync<Cuarto, Nota, Cuarto>(queryjoin, (cuarto, nota) =>
                     {
                         Cuarto cuartotemp;
 
@@ -80,16 +80,26 @@ namespace IntegracionWebAPI.Servicios.Implementacion
 
                     });
 
-                    return listado.ToList();
+                    if (cuartoc != null)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "";
+                        _resultado.cuarto = cuartoc.First();
+                        return _resultado;
+                    }                    
                 }
                 catch (Exception ex)    
                 {
-                    return null;
+                    _resultado.mensaje = ex.Message;
                 }
+
+                _resultado.ok = false;
+                _resultado.cuarto = null;
+                return _resultado;
             }
         }
 
-        public async Task<Resultado> AgregarCuarto(int capacidad, string foto)
+        public async Task<ResultadoCuarto> AgregarCuarto(int capacidad, string foto)
         {
             var insertcuarto = "INSERT INTO Cuartos (Capacidad, Foto, IdEstado) VALUES (@capacidadq, @fotoq, @estadoq)";
 
@@ -99,21 +109,19 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 {
                     await conexion.ExecuteAsync(insertcuarto, new { capacidadq = capacidad, fotoq = foto, estadoq = 1 });
                     _resultado.ok = true;
-
+                    _resultado.mensaje = "El cuarto se agrego con exito";
                     return _resultado;
                 }
                 catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
-
                     return _resultado;
-                }
-            
+                }            
             }
         }
 
-        public async Task<Resultado> EstadoCuarto(int estado, int id)
+        public async Task<ResultadoCuarto> CambiarEstadoCuarto(int estado, int id)
         {
             var updatecuarto = "UPDATE Cuartos SET IdEstado = @estadoq WHERE Id = @idq";
 
@@ -122,11 +130,12 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 try
                 {
                     await conexion.ExecuteAsync(updatecuarto, new { estadoq = estado, idq = id });
-                    _resultado.ok =true;
+                    _resultado.ok = true;
+                    _resultado.mensaje = "El estado del cuarto se cambio con exito";
                     return _resultado;
                 }
 
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
@@ -135,7 +144,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
         }
 
-        public async Task<Resultado> ActualizarCuarto(int idcuarto, int capacidad, string foto)
+        public async Task<ResultadoCuarto> ActualizarCuarto(int idcuarto, int capacidad, string foto)
         {
             var updatecuarto = "UPDATE Cuartos SET Capacidad = @capacidadq, Foto = @fotoq WHERE Id = @id";
 
@@ -145,16 +154,17 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 {
                     await conexion.ExecuteAsync(updatecuarto, new { capacidadq = capacidad, fotoq = foto, id = idcuarto });
                     _resultado.ok = true;
+                    _resultado.mensaje = "El cuarto se modifico con exito";
                     return _resultado;
                 }
-                catch(Exception ex)
+
+                catch (Exception ex)
                 {
                     _resultado.ok = false;
-                    _resultado.mensaje=ex.Message;
+                    _resultado.mensaje = ex.Message;
                     return _resultado;
                 }
             }
-
         }
     }
 }

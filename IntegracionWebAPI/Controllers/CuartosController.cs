@@ -37,20 +37,17 @@ namespace IntegracionWebAPI.Controllers
         {
             if (Id !=0)
             {
-                var cuartos = await _cuarto.CuartoPorId(Id);
+                var resultado = await _cuarto.CuartoPorId(Id);
 
-                if (cuartos != null)
+                if (resultado.ok)
                 {
-                    return Ok(cuartos);
+                    return Ok(resultado.cuarto);
                 }
-                else
-                {
-                    return NotFound("No hay cuarto con ese Id");
-                }
+                else { return BadRequest(resultado.mensaje);}
             }
             else
             {
-                return BadRequest("Ingrese un Id valido");
+                return BadRequest("El campo Id no puede estar vacio");
             }
         }
 
@@ -58,23 +55,30 @@ namespace IntegracionWebAPI.Controllers
         [HttpPost("AgregarunCuarto")]
         public async Task<ActionResult> Post ([FromForm] int capacidad,  IFormFile foto)
         {
-            string foto64;
-
-            using (var ms = new MemoryStream())
+            if ((capacidad != 0)&(foto != null))
             {
-                foto.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-                foto64 = Convert.ToBase64String(fileBytes);
-            }
-            var res = await _cuarto.AgregarCuarto(capacidad, foto64);
+                string foto64;
 
-            if (res.ok)
-            {
-                return Ok("El cuarto se agregó correctamente");
+                using (var ms = new MemoryStream())
+                {
+                    foto.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    foto64 = Convert.ToBase64String(fileBytes);
+                }
+                var resultado = await _cuarto.AgregarCuarto(capacidad, foto64);
+
+                if (resultado.ok)
+                {
+                    return Ok(resultado.mensaje);
+                }
+                else
+                {
+                    return BadRequest(resultado.mensaje);
+                }
             }
             else
             {
-                return BadRequest(res.mensaje);
+                return BadRequest("No puede haber campos vacios");
             }
 
         }
@@ -82,39 +86,54 @@ namespace IntegracionWebAPI.Controllers
         [HttpPatch("CambiarEstadoCuarto")]
         public async Task<ActionResult> EstadoCuarto(int estado, int id)
         {
-            var res = await _cuarto.EstadoCuarto(estado, id);
-
-            if(res.ok)
+            if((estado != 0)&(id != 0))
             {
-                return Ok("El estado del cuarto fue modificado con exito");
+                var resultado = await _cuarto.CambiarEstadoCuarto(estado, id);
+
+                if (resultado.ok)
+                {
+                    return Ok(resultado.mensaje);
+                }
+                else
+                {
+                    return BadRequest(resultado.mensaje);
+                }
             }
             else
             {
-                return BadRequest(res.mensaje);
+                return BadRequest("No puede haber campos vacios");
             }
+            
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPut("ActualizarCuarto")]
         public async Task<ActionResult> ActualizarCuarto([FromForm]int id, int capacidad, IFormFile foto)
         {
-            string foto64;
-
-            using (var ms = new MemoryStream())
+            if ((id != 0)&(capacidad != 0)&(foto != null))
             {
-                foto.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-                foto64 = Convert.ToBase64String(fileBytes);
-            }
-            var res = await _cuarto.ActualizarCuarto(id, capacidad, foto64);
+                string foto64;
 
-            if(res.ok)
-            {
-                return Ok("El cuarto se actualizo con exito");
+                using (var ms = new MemoryStream())
+                {
+                    foto.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    foto64 = Convert.ToBase64String(fileBytes);
+                }
+                var resultado = await _cuarto.ActualizarCuarto(id, capacidad, foto64);
+
+                if (resultado.ok)
+                {
+                    return Ok(resultado.mensaje);
+                }
+                else
+                {
+                    return BadRequest(resultado.mensaje);
+                }
             }
             else
             {
-                return BadRequest(res.mensaje);
+                return BadRequest("No puede haber campos vacios");
             }
         }
     }

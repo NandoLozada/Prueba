@@ -8,10 +8,10 @@ namespace IntegracionWebAPI.Servicios.Interfaz
     {
         Task<List<Cliente>> ListarClientes();
 
-        Task<Cliente> ClientePorDNI(int DNI);
+        Task<ResultadoCliente> ClientePorDNI(int DNI);
 
-        Task <Resultado> AgregarCliente(int DNI, string nombre);
+        Task<ResultadoCliente> AgregarCliente(int DNI, string nombre);
 
-        Task<Resultado> CambiarEstadoCliente(int estado, int id);
+        Task<ResultadoCliente> CambiarEstadoCliente(int estado, int id);
     }
 }

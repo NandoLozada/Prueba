@@ -1,7 +1,9 @@
-﻿namespace IntegracionWebAPI.Servicios.Interfaz
+﻿using IntegracionWebAPI.Utiles;
+
+namespace IntegracionWebAPI.Servicios.Interfaz
 {
     public interface IServicioOrden
     {
-        public Task<int> AgregarOrden(int idcliente);
+        public Task<ResultadoOrden> AgregarOrden(int idcliente);
     }
 }

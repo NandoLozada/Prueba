@@ -85,6 +85,11 @@ namespace IntegracionWebAPI
 
             //Nuevoooo
             services.AddScoped<Resultado>();
+            services.AddScoped<ResultadoCliente>();
+            services.AddScoped<ResultadoCuarto>();
+            services.AddScoped<ResultadoNota>();
+            services.AddScoped<ResultadoOrden>();
+            services.AddScoped<ResultadoReserva>();
             services.AddScoped<DapperContext>();
             services.AddScoped<IServicioCliente, ServicioCliente>();
             services.AddScoped<IServicioCuarto, ServicioCuarto>();

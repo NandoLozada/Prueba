@@ -23,6 +23,7 @@ namespace IntegracionWebAPI.Controllers
         {
             _cliente = cliente;
         }
+
         [HttpGet("ListaClientes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         public async Task<List<Cliente>> Get()
@@ -36,12 +37,13 @@ namespace IntegracionWebAPI.Controllers
         {
             if (DNI != 0)
             {
-                var clientes = await _cliente.ClientePorDNI(DNI);
-                if (clientes != null)
+                var resultado = await _cliente.ClientePorDNI(DNI);
+
+                if (resultado.ok)
                 {
-                    return Ok(clientes);
+                    return Ok(resultado.cliente);
                 }
-                else { return NotFound("No se encuentra ningun cliente con ese DNI"); }
+                else { return BadRequest(resultado.mensaje);}
             }
             else
             {
@@ -55,15 +57,15 @@ namespace IntegracionWebAPI.Controllers
         {            
             if ((nombre != null) & (DNI != 0))
             {
-                var res = await _cliente.AgregarCliente(DNI, nombre);
+                var resultado = await _cliente.AgregarCliente(DNI, nombre);
 
-                if (res.ok)
+                if (resultado.ok)
                 {
-                    return Ok("El cliente se agregó con exito");
+                    return Ok(resultado.mensaje);
                 }
                 else
                 {
-                    return BadRequest(res.mensaje);
+                    return BadRequest(resultado.mensaje);
                 }
             }
             else
@@ -76,18 +78,18 @@ namespace IntegracionWebAPI.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpPatch("CambiarEstadoCliente")]
         public async Task<ActionResult> CambiarEstadoCliente(int estado, int id)
-        {
-            var res = await _cliente.CambiarEstadoCliente(estado, id);
-
+        { 
             if ((estado != 0)&(id != 0))
             {
-                if (res.ok)
+                var resultado = await _cliente.CambiarEstadoCliente(estado, id);
+
+                if (resultado.ok)
                 {
-                    return Ok("El cliente ha cambiado su estado a " + estado + " con exito");
+                    return Ok(resultado.mensaje);
                 }
                 else
                 {
-                    return BadRequest(res.mensaje);
+                    return BadRequest(resultado.mensaje);
                 }
             }
             else

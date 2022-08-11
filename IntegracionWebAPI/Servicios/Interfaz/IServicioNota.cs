@@ -1,4 +1,5 @@
 ﻿using IntegracionWebAPI.Entidades;
+using IntegracionWebAPI.Utiles;
 
 namespace IntegracionWebAPI.Servicios.Interfaz
 {
@@ -6,10 +7,10 @@ namespace IntegracionWebAPI.Servicios.Interfaz
     {
         public Task<List<Nota>> ListaNotas();
 
-        public Task<List<Nota>> NotasPorCuarto(int idcuarto);
+        public Task<ResultadoNota> NotasPorCuarto(int idcuarto);
 
-        public void AgregarNota(int idcuarto, string descripcion);
+        public Task<ResultadoNota> AgregarNota(int idcuarto, string descripcion);
 
-        public void ActualizarNota(int id, string descripcion);
+        public Task<ResultadoNota> ActualizarNota(int id, string descripcion);
     }
 }

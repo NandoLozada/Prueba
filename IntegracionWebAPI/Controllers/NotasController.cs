@@ -12,16 +12,17 @@ namespace IntegracionWebAPI.Controllers
     [ApiController]
     [Route("api/Notas")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class NotasController: ControllerBase
-    {       
+    public class NotasController : ControllerBase
+    {
         private readonly IServicioNota _nota;
         private readonly IGeneratePdf generatePdf;
 
         public NotasController(IServicioNota nota, IGeneratePdf generatePdf)
-        {           
+        {
             _nota = nota;
             this.generatePdf = generatePdf;
         }
+
         [HttpGet]
         public async Task<List<Nota>> Get()
         {
@@ -30,30 +31,78 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [HttpGet("{idcuarto}")]
-        public async Task<List<Nota>> GetPorCuarto(int idcuarto)
+        public async Task<ActionResult<List<Nota>>> GetPorCuarto(int idcuarto)
         {
-            var notas = await _nota.NotasPorCuarto(idcuarto);
-            return notas;
+            if (idcuarto != 0)
+            {
+                var resultado = await _nota.NotasPorCuarto(idcuarto);
+                if (resultado.ok)
+                {
+                    return Ok(resultado.nota);
+                }
+                else { return BadRequest(resultado.mensaje);}
+            }
+            else
+            {
+                return BadRequest("El campo Id no puede estar vacio");
+            }
         }
 
         [HttpGet("PDF/{idcuarto}")]
-        public Task<IActionResult> GetPorCuartoPDF(int idcuarto)
+        public async Task<IActionResult> GetPorCuartoPDF(int idcuarto)
         {
-            var notas = _nota.NotasPorCuarto(idcuarto);
-            return generatePdf.GetPdf("View/NotasVista.cshtml", notas);
+            if (idcuarto != 0)
+            {
+                var resultado = await _nota.NotasPorCuarto(idcuarto);
+
+                if (resultado.ok)
+                {
+                    return await generatePdf.GetPdf("View/NotasVista.cshtml", resultado.nota);
+                }
+                else { return BadRequest(resultado.mensaje);}
+            }
+            else
+            {
+                return BadRequest("El campo Id no puede estar vacio");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("AgregarNota")]
-        public void Post(int idcuarto, string descripcion)
+        public async Task<ActionResult> Post(int idcuarto, string descripcion)
         {
-            _nota.AgregarNota(idcuarto, descripcion);
+            if ((idcuarto != 0) & (descripcion != ""))
+            {
+                var resultado = await _nota.AgregarNota(idcuarto, descripcion);
+                if (resultado.ok)
+                {
+                    return Ok(resultado.mensaje);
+                }
+                else { return BadRequest(resultado.mensaje);}
+            }
+            else
+            {
+                return BadRequest("No puede haber campos vacios");
+            }
         }
 
         [HttpPut]
-        public void ActualizarNota(int id, string descripcion)
+        public async Task<ActionResult> ActualizarNota(int id, string descripcion)
         {
-            _nota.ActualizarNota(id, descripcion);
+            if ((id != 0)&(descripcion!= ""))
+            {
+                var res = await _nota.ActualizarNota(id, descripcion);
+
+                if(res.ok)
+                {
+                    return Ok("La nota fue actualizada con exito");
+                }
+                else { return BadRequest(res.mensaje);}
+            }
+            else
+            {
+                return BadRequest("Los campos no pueden estar vacios");
+            }
         }
     }
 }

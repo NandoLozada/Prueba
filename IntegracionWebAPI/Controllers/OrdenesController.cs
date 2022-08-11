@@ -22,11 +22,21 @@ namespace IntegracionWebAPI.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("CrearOrden")]
-        public async Task<int> Post(int idcliente)
+        public async Task<ActionResult<int>> Post(int idcliente)
         {
-            var idorden = await _orden.AgregarOrden(idcliente);
-            return idorden;
-
+            if(idcliente!= 0)
+            {
+                var resultado = await _orden.AgregarOrden(idcliente);
+                if (resultado.ok)
+                {
+                    return Ok(resultado.orden.Id);
+                }
+                else { return BadRequest(resultado.mensaje);}
+            }
+            else
+            {
+                return BadRequest("No puede haber campos vacios");
+            }
         }
     }
 }

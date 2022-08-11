@@ -8,13 +8,13 @@ namespace IntegracionWebAPI.Servicios.Interfaz
     {
         public Task<List<Cuarto>> ListaCuartos();
 
-        public Task<List<Cuarto>> CuartoPorId(int Id);
+        public Task<ResultadoCuarto> CuartoPorId(int Id);
 
-        public Task<Resultado> AgregarCuarto(int capacidad, string foto);
+        public Task<ResultadoCuarto> AgregarCuarto(int capacidad, string foto);
 
-        public Task<Resultado> EstadoCuarto(int estado, int id);
+        public Task<ResultadoCuarto> CambiarEstadoCuarto(int estado, int id);
 
-        public Task<Resultado> ActualizarCuarto(int id, int capacidad, string foto);
+        public Task<ResultadoCuarto> ActualizarCuarto(int id, int capacidad, string foto);
 
     }
 }

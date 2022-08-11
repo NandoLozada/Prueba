@@ -21,54 +21,102 @@ namespace IntegracionWebAPI.Controllers
             _reserva = reserva;
             this.generatePdf = generatePdf;
         }
-        [HttpGet]
-        public async Task<List<Reserva>> Get()
-        {
-            var clientes = await _reserva.ListaReservas();
-            return clientes;
-        }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        [HttpGet("PDF/{idcuarto}")]
-        public async Task<IActionResult> GetPorCuartoPDF(int idcuarto)
+        [HttpGet]
+        public async Task<ActionResult<List<Reserva>>> Get()
         {
-            var reservas = await _reserva.ListaReservasPorCuarto(idcuarto);
-            Response.ContentType="application/pdf";
-            return await generatePdf.GetPdf("View/ReservasVista.cshtml", reservas);
-        }
+            var reservas = await _reserva.ListaReservas();
+
+            if (reservas.ok)
+            {
+                return Ok(reservas.reserva);
+            }
+
+            return BadRequest(reservas.mensaje);
+        }        
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
         [HttpGet("ReservaPorCuarto")]
-        public async Task<List<Reserva>> Get(int id)
+        public async Task<ActionResult<List<Reserva>>> Get(int id)
         {
-            var reservas = await _reserva.ListaReservasPorCuarto(id);
-            return reservas;
+            if (id != 0)
+            {
+                var reservas = await _reserva.ListaReservasPorCuarto(id);
+
+                if (reservas.ok)
+                {
+                    return Ok(reservas.reserva);
+                }
+                else { return BadRequest(reservas.mensaje); }
+            }
+            else
+            {
+                return BadRequest("El campo Id no puede estar vacio");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpGet("CuartosDisponibles")]
-        public async Task<List<int>> BuscarCuartosDisponibles(DateTime fechaini, DateTime fechafin)
+        public async Task<ActionResult<List<int>>> BuscarCuartosDisponibles(DateTime fechaini, DateTime fechafin)
         {
-            var cuartos = await _reserva.CuartosDisponibles(fechaini, fechafin);
-            return cuartos;
+            if ((Convert.ToString(fechafin) != "") & (Convert.ToString(fechaini) != ""))
+            {
+                var cuartos = await _reserva.CuartosDisponibles(fechaini, fechafin);
+
+                if (cuartos.ok)
+                {
+                    return Ok(cuartos.cuartosdisponibles);
+                }
+                else { return BadRequest(cuartos.mensaje); }
+            }
+            else
+            {
+                return BadRequest("Los campos de fechas no puede estar vacio");
+            }
         }
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("CrearReserva")]
         public async Task <ActionResult> Post(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
-            if (await _reserva.TomarReserva(idorden, idcuarto, fecinicio, fecfin))
+            if ((idorden != 0)&(idcuarto !=0)&(Convert.ToString(fecinicio) !="")&(Convert.ToString(fecfin) != ""))
             {
-                return Ok();
-            }
+                var resultado = await _reserva.TomarReserva(idorden, idcuarto, fecinicio, fecfin);
 
-            return BadRequest("No se puede hacer la reserva");
+                if (resultado.ok)
+                {
+                    return Ok(resultado.mensaje);
+                }
+                else
+                {
+                    return BadRequest(resultado.mensaje);
+                }
+            }
+            else
+            {
+                return BadRequest("No pueden haber campos vacios");
+            }
             
         }
 
         [HttpPatch("CambiarEstadoReserva")]
-        public void CambiarEstadoReserva(int estado, int id)
+        public async Task<ActionResult> CambiarEstadoReserva(int estado, int id)
         {
-            _reserva.CambiarEstadoReserva(estado, id);
+            if ((estado != 0)&(id != 0))
+            {
+                var resultado = await _reserva.CambiarEstadoReserva(estado, id);
+
+                if(resultado.ok)
+                {
+                    return Ok(resultado);
+                }
+
+                return BadRequest(resultado);
+            }
+            else
+            {
+                return BadRequest("Los campos no pueden estar vacios");
+            }
         }
     }
 }

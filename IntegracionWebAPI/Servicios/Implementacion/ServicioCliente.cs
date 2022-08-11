@@ -10,9 +10,9 @@ namespace IntegracionWebAPI.Servicios.Implementacion
     public class ServicioCliente : IServicioCliente
     {
         private readonly DapperContext _db;
-        private readonly Resultado _resultado;
+        private readonly ResultadoCliente _resultado;
 
-        public ServicioCliente(DapperContext db, Resultado resultado)
+        public ServicioCliente(DapperContext db, ResultadoCliente resultado)
         {
             _db = db;
             _resultado = resultado;
@@ -30,7 +30,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
         }
 
-        public async Task<Cliente> ClientePorDNI(int DNI)
+        public async Task<ResultadoCliente> ClientePorDNI(int DNI)
         {
             var clientedni = "SELECT * FROM Clientes WHERE DNI =" + DNI;
 
@@ -40,16 +40,26 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 {
                     var cliente = await conexion.QuerySingleAsync<Cliente>(clientedni);
 
-                    return cliente;
+                    if (cliente != null)
+                    {
+                        _resultado.cliente = cliente;
+                        _resultado.ok = true;
+                        _resultado.mensaje = "";
+                        return _resultado;
+                    }                 
                 }
                 catch(Exception ex)
                 {
-                    return null;
+                    _resultado.mensaje =ex.Message;
                 }
+
+                _resultado.ok = false;
+                _resultado.cliente = null;
+                return _resultado;
             }
         }
 
-        public async Task<Resultado> AgregarCliente(int DNI, string nombre)
+        public async Task<ResultadoCliente> AgregarCliente(int DNI, string nombre)
         {
             var insertcliente = "INSERT INTO Clientes (NomApe, DNI, IdEstado) VALUES (@nombreq, @dniq, @estadoq)";
 
@@ -59,6 +69,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 {
                     await conexion.ExecuteAsync(insertcliente, new { nombreq = nombre, dniq = DNI, estadoq = 1 });
                     _resultado.ok = true;
+                    _resultado.mensaje = "El cliente se agrego con exito";
                     return _resultado ;
                 }
                 catch (Exception ex)
@@ -70,7 +81,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             }
         }
 
-        public async Task<Resultado> CambiarEstadoCliente(int estado, int id)
+        public async Task<ResultadoCliente> CambiarEstadoCliente(int estado, int id)
         {
             var updatecliente = "UPDATE Clientes SET IdEstado = @estadoq WHERE Id = @idq";
 
@@ -80,6 +91,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 {
                     await conexion.ExecuteAsync(updatecliente, new { estadoq = estado, idq = id });
                     _resultado.ok = true;
+                    _resultado.mensaje = "El estado del cliente se cambio con exito";
                     return _resultado;
                 }
 
@@ -88,8 +100,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                     _resultado.ok = false;
                     _resultado.mensaje =ex.Message;
                     return _resultado;
-                }
-               
+                }               
             }
         }
     }
