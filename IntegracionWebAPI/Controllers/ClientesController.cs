@@ -26,10 +26,15 @@ namespace IntegracionWebAPI.Controllers
 
         [HttpGet("ListaClientes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-        public async Task<List<Cliente>> Get()
+        public async Task<ActionResult<List<Cliente>>> Get()
         {
             var clientes = await _cliente.ListarClientes();
-            return clientes;
+
+            if(clientes.ok)
+            {
+                return Ok(clientes.clientes);
+            }
+            return BadRequest(clientes.mensaje);
         }
 
         [HttpGet("Cliente/{DNI}")]

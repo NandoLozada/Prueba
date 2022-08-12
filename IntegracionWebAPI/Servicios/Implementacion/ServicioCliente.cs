@@ -18,15 +18,24 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             _resultado = resultado;
         }
 
-        public async Task<List<Cliente>> ListarClientes()
+        public async Task<ResultadoCliente> ListarClientes()
         {
             var queryListaClientes = "SELECT * FROM Clientes";
-
-            using (var conexion = _db.SuperConexionNando())
-
+            try
             {
-                var listaClientes = (await conexion.QueryAsync<Cliente>(queryListaClientes)).ToList();
-                return listaClientes;
+                using (var conexion = _db.SuperConexionNando())
+                {
+                    var listaClientes = (await conexion.QueryAsync<Cliente>(queryListaClientes)).ToList();
+                    _resultado.ok = true;
+                    _resultado.clientes = listaClientes;
+                    return _resultado;
+                }
+            }
+            catch (Exception ex)
+            {
+                _resultado.ok = false;
+                _resultado.mensaje = ex.Message;
+                return _resultado;  
             }
         }
 
@@ -89,18 +98,25 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    await conexion.ExecuteAsync(updatecliente, new { estadoq = estado, idq = id });
-                    _resultado.ok = true;
-                    _resultado.mensaje = "El estado del cliente se cambio con exito";
-                    return _resultado;
-                }
+                    var r = await conexion.ExecuteAsync(updatecliente, new { estadoq = estado, idq = id });
 
+                    if (r !=0)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "El estado del cliente se cambio con exito";
+                    }
+                    else 
+                    { 
+                        _resultado.ok = false;
+                        _resultado.mensaje = "No se pudo cambiar el estado del cliente, puede que la Id sea incorrecta";
+                    }
+                }
                 catch(Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje =ex.Message;
-                    return _resultado;
-                }               
+                }       
+                return _resultado;
             }
         }
     }

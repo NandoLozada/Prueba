@@ -4,6 +4,6 @@ namespace IntegracionWebAPI.Utiles
 {
     public class ResultadoNota:Resultado
     {
-        public List<Nota> nota { get; set; }
+        public List<Nota> notas { get; set; }
     }
 }

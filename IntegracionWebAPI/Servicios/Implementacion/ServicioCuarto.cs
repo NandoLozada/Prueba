@@ -17,36 +17,45 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             _db = db;
             _resultado = resultado;
         }
-        public async Task<List<Cuarto>> ListaCuartos()
+        public async Task<ResultadoCuarto> ListaCuartos()
         {
             var queryjoin = "SELECT * FROM Cuartos LEFT JOIN Notas ON Cuartos.Id = Notas.IdCuarto ";
 
             var diccuarto = new Dictionary<int, Cuarto>();
-
-            using (var conexion = _db.SuperConexionNando())
-
+            try
             {
-                var listado = (await conexion.QueryAsync<Cuarto, Nota, Cuarto>(queryjoin, (cuarto, nota) =>
+                using (var conexion = _db.SuperConexionNando())
                 {
-                    Cuarto cuartotemp;
-
-                    if (!diccuarto.TryGetValue(cuarto.Id, out cuartotemp))
+                    var listado = (await conexion.QueryAsync<Cuarto, Nota, Cuarto>(queryjoin, (cuarto, nota) =>
                     {
-                        cuartotemp = cuarto;
-                        cuartotemp.Notas = new List<Nota>();
-                        diccuarto.Add(cuartotemp.Id, cuarto);
-                    }
+                        Cuarto cuartotemp;
 
-                    if (nota != null)
-                    {
-                        cuartotemp.Notas.Add(nota);
-                    }
+                        if (!diccuarto.TryGetValue(cuarto.Id, out cuartotemp))
+                        {
+                            cuartotemp = cuarto;
+                            cuartotemp.Notas = new List<Nota>();
+                            diccuarto.Add(cuartotemp.Id, cuarto);
+                        }
 
-                    return cuartotemp;
+                        if (nota != null)
+                        {
+                            cuartotemp.Notas.Add(nota);
+                        }
 
-                })).Distinct().ToList();
+                        return cuartotemp;
 
-                return listado.ToList();
+                    })).Distinct().ToList();
+
+                    _resultado.ok = true;
+                    _resultado.cuartos = listado;
+                    return _resultado;
+                }
+            }
+            catch(Exception ex)
+            {
+                _resultado.ok = false;
+                _resultado.mensaje = ex.Message;
+                return _resultado;  
             }
         }
 
@@ -129,18 +138,26 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    await conexion.ExecuteAsync(updatecuarto, new { estadoq = estado, idq = id });
-                    _resultado.ok = true;
-                    _resultado.mensaje = "El estado del cuarto se cambio con exito";
-                    return _resultado;
+                    var r = await conexion.ExecuteAsync(updatecuarto, new { estadoq = estado, idq = id });
+                    
+                    if(r!=0)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "El estado del cuarto se cambio con exito";
+                    }
+                    else
+                    {
+                        _resultado.ok = false;
+                        _resultado.mensaje = "No se pudo cambiar el estado del cuarto, puede que la Id sea incorrecta";
+                    }
                 }
 
                 catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
-                    return _resultado;
                 }
+                return _resultado;
             }
         }
 
@@ -152,18 +169,26 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    await conexion.ExecuteAsync(updatecuarto, new { capacidadq = capacidad, fotoq = foto, id = idcuarto });
-                    _resultado.ok = true;
-                    _resultado.mensaje = "El cuarto se modifico con exito";
-                    return _resultado;
+                    var r = await conexion.ExecuteAsync(updatecuarto, new { capacidadq = capacidad, fotoq = foto, id = idcuarto });
+                    
+                    if(r!=0)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "El cuarto se modifico con exito";
+                    }
+                    else
+                    {
+                        _resultado.ok = false;
+                        _resultado.mensaje = "No se pudo cambiar el estado del cuarto, puede que la Id sea incorrecta";
+                    }
                 }
 
                 catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
-                    return _resultado;
                 }
+                return _resultado;
             }
         }
     }

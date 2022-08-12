@@ -5,7 +5,7 @@ namespace IntegracionWebAPI.Servicios.Interfaz
 {
     public interface IServicioNota
     {
-        public Task<List<Nota>> ListaNotas();
+        public Task<ResultadoNota> ListaNotas();
 
         public Task<ResultadoNota> NotasPorCuarto(int idcuarto);
 

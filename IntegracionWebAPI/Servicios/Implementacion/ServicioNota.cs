@@ -17,15 +17,25 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             _resultado = resultado;
         }
 
-        public async Task<List<Nota>> ListaNotas()
+        public async Task<ResultadoNota> ListaNotas()
         {
             var queryListaNotas = "SELECT * FROM Notas";
-
-            using (var conexion = _db.SuperConexionNando())
-
+            try
             {
-                var listaNotas = (await conexion.QueryAsync<Nota>(queryListaNotas)).ToList();
-                return listaNotas;
+                using (var conexion = _db.SuperConexionNando())
+                {
+                    var listaNotas = (await conexion.QueryAsync<Nota>(queryListaNotas)).ToList();
+
+                    _resultado.ok = true;
+                    _resultado.notas = listaNotas;
+                    return _resultado;
+                }
+            }
+            catch (Exception ex)
+            {
+                _resultado.ok = false;
+                _resultado.mensaje = ex.Message;
+                return _resultado;
             }
         }
 
@@ -41,7 +51,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
 
                     if(notas != null)
                     {
-                        _resultado.nota = notas;
+                        _resultado.notas = notas;
                         _resultado.ok = true;
                         _resultado.mensaje = "";
                         return _resultado;
@@ -53,30 +63,40 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 }
 
                 _resultado.ok = false;
-                _resultado.nota = null;
+                _resultado.notas = null;
                 return _resultado;
             }
         }
 
         public async Task<ResultadoNota> AgregarNota(int idcuarto, string descripcion)
         {
+            var cuartodisponible = "SELECT COUNT(*) FROM Cuartos WHERE Id = @idcuarto AND IdEstado = 1";
             var insertnota = "INSERT INTO Notas (IdCuarto, Descripcion) VALUES (@idcuarto, @descripcion)";
 
             using (var conexion = _db.SuperConexionNando())
             {
                 try
                 {
-                    await conexion.ExecuteAsync(insertnota, new { idcuarto = idcuarto, descripcion = descripcion });
-                    _resultado.ok = true;
-                    _resultado.mensaje = "La nota se agrego con exito";
-                    return _resultado;
+                    var r = await conexion.QuerySingleAsync<int>(cuartodisponible, new {idcuarto = idcuarto});
+
+                    if (r != 0)
+                    {
+                        await conexion.ExecuteAsync(insertnota, new { idcuarto = idcuarto, descripcion = descripcion });
+                        _resultado.ok = true;
+                        _resultado.mensaje = "La nota se agrego con exito";
+                    }
+                    else
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "La nota no se pudo agregar, el Id de cuarto es incorrecto";
+                    }
                 }
                 catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
-                    return _resultado;
                 }
+                return _resultado;
 
             }
         }
@@ -89,17 +109,25 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 try
                 {
-                    await conexion.ExecuteAsync(updatecuarto, new { descripcionq = descripcion, id = id });
-                    _resultado.ok = true;
-                    _resultado.mensaje = "La nota se actualizo con exito";
-                    return _resultado;
+                    var r = await conexion.ExecuteAsync(updatecuarto, new { descripcionq = descripcion, id = id });
+                    
+                    if (r!=0)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "La nota se actualizo con exito";
+                    }
+                    else
+                    {
+                        _resultado.ok = false;
+                        _resultado.mensaje = "No se pudo cambiar el estado de la nota, puede que la Id sea incorrecta";
+                    }
                 }
                 catch (Exception ex)
                 {
                     _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
-                    return _resultado;
                 }
+                return _resultado;
             }
         }
     }

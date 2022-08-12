@@ -29,7 +29,7 @@ namespace IntegracionWebAPI.Controllers
                 var resultado = await _orden.AgregarOrden(idcliente);
                 if (resultado.ok)
                 {
-                    return Ok(resultado.orden.Id);
+                    return Ok(resultado.ordenId);
                 }
                 else { return BadRequest(resultado.mensaje);}
             }

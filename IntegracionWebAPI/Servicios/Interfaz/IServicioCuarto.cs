@@ -6,7 +6,7 @@ namespace IntegracionWebAPI.Servicios.Interfaz
 {
     public interface IServicioCuarto
     {
-        public Task<List<Cuarto>> ListaCuartos();
+        public Task<ResultadoCuarto> ListaCuartos();
 
         public Task<ResultadoCuarto> CuartoPorId(int Id);
 

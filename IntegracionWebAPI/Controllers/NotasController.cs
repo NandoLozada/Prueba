@@ -23,22 +23,27 @@ namespace IntegracionWebAPI.Controllers
             this.generatePdf = generatePdf;
         }
 
-        [HttpGet]
-        public async Task<List<Nota>> Get()
+        [HttpGet("TodasLasNotas")]
+        public async Task<ActionResult<List<Nota>>> TodasLasNotas()
         {
             var notas = await _nota.ListaNotas();
-            return notas;
+
+            if(notas.ok)
+            {
+                return Ok(notas.notas);
+            }
+            return BadRequest(notas.mensaje);
         }
 
         [HttpGet("{idcuarto}")]
-        public async Task<ActionResult<List<Nota>>> GetPorCuarto(int idcuarto)
+        public async Task<ActionResult<List<Nota>>> NotasPorCuarto(int idcuarto)
         {
             if (idcuarto != 0)
             {
                 var resultado = await _nota.NotasPorCuarto(idcuarto);
                 if (resultado.ok)
                 {
-                    return Ok(resultado.nota);
+                    return Ok(resultado.notas);
                 }
                 else { return BadRequest(resultado.mensaje);}
             }
@@ -49,7 +54,7 @@ namespace IntegracionWebAPI.Controllers
         }
 
         [HttpGet("PDF/{idcuarto}")]
-        public async Task<IActionResult> GetPorCuartoPDF(int idcuarto)
+        public async Task<IActionResult> NotasPorCuartoPDF(int idcuarto)
         {
             if (idcuarto != 0)
             {
@@ -57,7 +62,7 @@ namespace IntegracionWebAPI.Controllers
 
                 if (resultado.ok)
                 {
-                    return await generatePdf.GetPdf("View/NotasVista.cshtml", resultado.nota);
+                    return await generatePdf.GetPdf("View/NotasVista.cshtml", resultado.notas);
                 }
                 else { return BadRequest(resultado.mensaje);}
             }
@@ -69,7 +74,7 @@ namespace IntegracionWebAPI.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAC")]
         [HttpPost("AgregarNota")]
-        public async Task<ActionResult> Post(int idcuarto, string descripcion)
+        public async Task<ActionResult> PAgregarNota(int idcuarto, string descripcion)
         {
             if ((idcuarto != 0) & (descripcion != ""))
             {
@@ -86,7 +91,7 @@ namespace IntegracionWebAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("ActualizarNota")]
         public async Task<ActionResult> ActualizarNota(int id, string descripcion)
         {
             if ((id != 0)&(descripcion!= ""))

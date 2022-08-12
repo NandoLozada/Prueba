@@ -26,10 +26,15 @@ namespace IntegracionWebAPI.Controllers
 
 
         [HttpGet("ListadeCuartos")]
-        public async Task<List<Cuarto>> Get()
+        public async Task<ActionResult<List<Cuarto>>> Get()
         {
             var cuartos = await _cuarto.ListaCuartos();
-            return cuartos;
+
+            if (cuartos.ok)
+            {
+                return Ok(cuartos.cuartos);
+            }
+            return BadRequest(cuartos.mensaje);
         }
 
         [HttpGet("UnCuarto/{Id}")]

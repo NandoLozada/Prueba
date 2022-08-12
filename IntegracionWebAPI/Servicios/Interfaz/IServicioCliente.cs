@@ -6,7 +6,7 @@ namespace IntegracionWebAPI.Servicios.Interfaz
 {
     public interface IServicioCliente
     {
-        Task<List<Cliente>> ListarClientes();
+        Task<ResultadoCliente> ListarClientes();
 
         Task<ResultadoCliente> ClientePorDNI(int DNI);
 

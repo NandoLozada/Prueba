@@ -26,10 +26,12 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 try
                 {
                     var listaReservas = (await conexion.QueryAsync<Reserva>(queryListaReservas)).ToList();
+                    _resultado.ok = true;
                     _resultado.reserva = listaReservas;
                 }
                catch(Exception ex)
                 {
+                    _resultado.ok = false;
                     _resultado.mensaje = ex.Message;
                 }
 
@@ -108,10 +110,18 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 using (var conexion = _db.SuperConexionNando())
                 {
-                    await conexion.ExecuteAsync(updatereserva, new { estadoq = estado, idq = id });
+                    var r = await conexion.ExecuteAsync(updatereserva, new { estadoq = estado, idq = id });
 
-                    _resultado.ok = true;
-                    _resultado.mensaje = "El estado de la reserva se actualizo con exito";
+                    if(r!=0)
+                    {
+                        _resultado.ok = true;
+                        _resultado.mensaje = "El estado de la reserva se actualizo con exito";
+                    }
+                    else
+                    {
+                        _resultado.ok = false;
+                        _resultado.mensaje = "No se pudo cambiar el estado de la reserva, puede que la Id sea incorrecta";
+                    }
                 }
             }
             catch (Exception ex)

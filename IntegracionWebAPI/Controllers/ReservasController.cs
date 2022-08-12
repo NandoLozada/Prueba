@@ -13,7 +13,7 @@ namespace IntegracionWebAPI.Controllers
     [Route("api/reservas")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ReservasController: ControllerBase
-    {private readonly IServicioReserva _reserva;
+    {   private readonly IServicioReserva _reserva;
         private readonly IGeneratePdf generatePdf;
 
         public ReservasController(IServicioReserva reserva, IGeneratePdf generatePdf)

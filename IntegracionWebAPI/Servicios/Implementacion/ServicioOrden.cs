@@ -9,7 +9,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
     public class ServicioOrden: IServicioOrden
     {
         private readonly DapperContext _db;
-        private readonly ResultadoOrden _resultado;
+        private ResultadoOrden _resultado;
 
         public ServicioOrden(DapperContext db, ResultadoOrden resultado)
         {
@@ -27,7 +27,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
                 try
                 {
                     await conexion.ExecuteAsync(insertorden, new { idcliente = idcliente });
-                    _resultado.orden.Id = await conexion.QuerySingleAsync<int>(ultid);
+                    _resultado.ordenId = await conexion.QuerySingleAsync<int>(ultid);
                     _resultado.ok = true;
                     _resultado.mensaje = "";
                     return _resultado;
