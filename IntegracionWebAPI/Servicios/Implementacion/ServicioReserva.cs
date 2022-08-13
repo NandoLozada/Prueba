@@ -71,13 +71,16 @@ namespace IntegracionWebAPI.Servicios.Implementacion
             {
                 var listaid = await ListaIdCuarto();
 
+                List<int> listadisponibles = new List<int>();
+                
                 foreach (int Id in listaid)
                 {
                     if (await HayDisponibilidad(Id, fechaini, fechafin))
                     {
-                        _resultado.cuartosdisponibles.Add(Id);
+                        listadisponibles.Add(Id);
                     }
                 }
+                _resultado.cuartosdisponibles = listadisponibles;
                 _resultado.ok = true;
                 _resultado.mensaje = "";
             }
@@ -187,7 +190,7 @@ namespace IntegracionWebAPI.Servicios.Implementacion
         private async Task<ResultadoReserva> AgregarReserva(int idorden, int idcuarto, DateTime fecinicio, DateTime fecfin)
         {
             var insertreserva = "INSERT INTO Reservas (IdOrden, IdCuarto, FechaInicio, FechaFin, IdEstado) VALUES (@idordenq, @idcuartoq, @fecinicioq, @fecfinq, @estadoq)";
-            var estadocuarto = "UPDATE Cuartos SET Estado = 2 WHERE Id = @idcuartoq";
+            var estadocuarto = "UPDATE Cuartos SET IdEstado = 2 WHERE Id = @idcuartoq";
 
             try
             {
