@@ -1,5 +1,4 @@
 ﻿using IntegracionWebAPI.Entidades;
-using IntegracionWebAPI.DAOs;
 using Microsoft.AspNetCore.Mvc;
 using IntegracionWebAPI.Servicios;
 using IntegracionWebAPI.DTOs;
@@ -45,7 +44,7 @@ namespace IntegracionWebAPI.Controllers
                 usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
                 await userManager.AddClaimAsync(usuario, new Claim("esAC", "2"));
 
-                return await ConstruirToken(credencialesUsuario);
+                return Ok("El usuario se ha registrado con exito");
             }
             else
             {
@@ -67,7 +66,7 @@ namespace IntegracionWebAPI.Controllers
 
             if (resultado.Succeeded)
             {
-                return await ConstruirToken(credencialesUsuario);
+                return Ok("La contraseña se a modificado con exito");
             }
             else
             {

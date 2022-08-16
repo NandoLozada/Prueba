@@ -1,5 +1,5 @@
 ﻿using IntegracionWebAPI.Controllers;
-using IntegracionWebAPI.DAOs;
+//using IntegracionWebAPI.DAOs;
 using IntegracionWebAPI.Servicios;
 using Microsoft.AspNetCore.Identity;
 using Wkhtmltopdf.NetCore;
@@ -66,22 +66,22 @@ namespace IntegracionWebAPI
 
             services.AddSwaggerGen();
 
-            services.AddTransient<ConexionDB>();
+            //services.AddTransient<ConexionDB>();
 
-            services.AddTransient<Clientes.ServClientes>();
-            services.AddTransient<ClientesDAO>();            
+            //services.AddTransient<Clientes.ServClientes>();
+            //services.AddTransient<ClientesDAO>();            
 
-            services.AddTransient<Cuartos.ServCuartos>();
-            services.AddTransient<CuartosDAO>();
+            //services.AddTransient<Cuartos.ServCuartos>();
+            //services.AddTransient<CuartosDAO>();
 
-            services.AddTransient<Notas.ServNotas>();
-            services.AddTransient<NotasDAO>();
+            //services.AddTransient<Notas.ServNotas>();
+            //services.AddTransient<NotasDAO>();
 
-            services.AddTransient<Ordenes.ServOrdenes>();
-            services.AddTransient<OrdenesDAO>();
+            //services.AddTransient<Ordenes.ServOrdenes>();
+            //services.AddTransient<OrdenesDAO>();
 
-            services.AddTransient<Reservas.ServReservas>();
-            services.AddTransient<ReservasDAO>();
+            //services.AddTransient<Reservas.ServReservas>();
+            //services.AddTransient<ReservasDAO>();
 
             //Nuevoooo
             services.AddScoped<Resultado>();

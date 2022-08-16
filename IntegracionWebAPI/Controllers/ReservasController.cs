@@ -1,6 +1,6 @@
 ﻿using IntegracionWebAPI.Entidades;
 using Microsoft.AspNetCore.Mvc;
-using IntegracionWebAPI.DAOs;
+//using IntegracionWebAPI.DAOs;
 using IntegracionWebAPI.Servicios;
 using Wkhtmltopdf.NetCore;
 using Microsoft.AspNetCore.Authorization;
