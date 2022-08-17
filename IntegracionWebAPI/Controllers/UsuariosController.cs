@@ -44,7 +44,7 @@ namespace IntegracionWebAPI.Controllers
                 usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
                 await userManager.AddClaimAsync(usuario, new Claim("esAC", "2"));
 
-                return Ok("El usuario se ha registrado con exito");
+                return Ok("El usuario se ha registrado como Atencion al Cliente");
             }
             else
             {
