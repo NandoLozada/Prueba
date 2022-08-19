@@ -1,1 +1,7 @@
 *.vsidx
+.vs/IntegracionWebAPI/v17/.suo
+IntegracionWebAPI/bin/Debug/net6.0/IntegracionWebAPI.dll
+IntegracionWebAPI/bin/Debug/net6.0/IntegracionWebAPI.pdb
+IntegracionWebAPI/obj/staticwebassets.pack.sentinel
+IntegracionWebAPI/obj/Debug/net6.0/IntegracionWebAPI.dll
+IntegracionWebAPI/obj/Debug/net6.0/IntegracionWebAPI.pdb
