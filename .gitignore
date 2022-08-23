@@ -5,3 +5,6 @@ IntegracionWebAPI/bin/Debug/net6.0/IntegracionWebAPI.pdb
 IntegracionWebAPI/obj/staticwebassets.pack.sentinel
 IntegracionWebAPI/obj/Debug/net6.0/IntegracionWebAPI.dll
 IntegracionWebAPI/obj/Debug/net6.0/IntegracionWebAPI.pdb
+.vs/IntegracionWebAPI/DesignTimeBuild/.dtbcache.v2
+.vs/ProjectEvaluation/integracionwebapi.metadata.v2
+.vs/ProjectEvaluation/integracionwebapi.projects.v2
